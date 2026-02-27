@@ -1,4 +1,4 @@
-﻿/*using System;
+/*using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -17,6 +17,9 @@ namespace POSales
         SqlCommand cm = new SqlCommand();
         DBConnect dbcon = new DBConnect();
         string stitle = "Point Of Sales";
+        // Prevent recursive TextChanged updates when syncing Cost/Markup/Price
+        private bool _syncPricing = false;
+
         Product product;
         public ProductModule(Product pd)
         {
@@ -367,6 +370,9 @@ namespace POSales
         DBConnect dbcon = new DBConnect();
         Product product;
         string stitle = "Point Of Sales";
+        // Prevent recursive TextChanged updates when syncing Cost/Markup/Price
+        private bool _syncPricing = false;
+
 
         public ProductModule(Product pd)
         {
@@ -380,20 +386,92 @@ namespace POSales
 
             // Hook up Add Brand button (you need to add this button in designer)
             btnAddBrand.Click += btnAddBrand_Click;
-            txtMarkup.TextChanged += (s, e) => CalculatePrice();
+
+            // Pricing sync (both directions)
+            txtMarkup.TextChanged += TxtMarkup_TextChanged;
+            txtPrice.TextChanged += TxtPrice_TextChanged;
+            txtCostPrice.TextChanged += TxtCostPrice_TextChanged;
 
         }
-        private void CalculatePrice()
+        private void TxtMarkup_TextChanged(object sender, EventArgs e)
         {
-            double cost = 0;
-            double markup = 0;
+            if (_syncPricing) return;
+            // If user edits markup, calculate selling price
+            SyncPriceFromMarkup();
+        }
 
-            double.TryParse(txtCostPrice.Text, out cost);
-            double.TryParse(txtMarkup.Text, out markup);
+        private void TxtPrice_TextChanged(object sender, EventArgs e)
+        {
+            if (_syncPricing) return;
+            // If user edits price, calculate markup percent
+            SyncMarkupFromPrice();
+        }
 
-            double selling = cost + (cost * markup / 100);
+        private void TxtCostPrice_TextChanged(object sender, EventArgs e)
+        {
+            if (_syncPricing) return;
 
-            txtPrice.Text = selling.ToString("0.00");
+            // When cost changes, keep whichever field (markup or price) the user already filled.
+            // Prefer markup -> price, otherwise price -> markup.
+            double cost;
+            if (!double.TryParse(txtCostPrice.Text, out cost) || cost <= 0)
+                return;
+
+            if (!string.IsNullOrWhiteSpace(txtMarkup.Text))
+                SyncPriceFromMarkup();
+            else if (!string.IsNullOrWhiteSpace(txtPrice.Text))
+                SyncMarkupFromPrice();
+        }
+
+        private void SyncPriceFromMarkup()
+        {
+            try
+            {
+                _syncPricing = true;
+
+                double cost = 0, markup = 0;
+                double.TryParse(txtCostPrice.Text, out cost);
+                double.TryParse(txtMarkup.Text, out markup);
+
+                if (cost <= 0)
+                {
+                    txtPrice.Text = "0.00";
+                    return;
+                }
+
+                double selling = cost + (cost * markup / 100.0);
+                txtPrice.Text = selling.ToString("0.00");
+            }
+            finally
+            {
+                _syncPricing = false;
+            }
+        }
+
+        private void SyncMarkupFromPrice()
+        {
+            try
+            {
+                _syncPricing = true;
+
+                double cost = 0, price = 0;
+                double.TryParse(txtCostPrice.Text, out cost);
+                double.TryParse(txtPrice.Text, out price);
+
+                if (cost <= 0)
+                {
+                    txtMarkup.Text = "0";
+                    return;
+                }
+
+                double markup = ((price - cost) / cost) * 100.0;
+                // Allow negative markup but keep it readable
+                txtMarkup.Text = markup.ToString("0.##");
+            }
+            finally
+            {
+                _syncPricing = false;
+            }
         }
 
         // Load brands into combobox
@@ -423,6 +501,7 @@ namespace POSales
             txtBarcode.Clear();
             txtPdesc.Clear();
             txtCostPrice.Clear();
+            txtMarkup.Clear();
             txtPrice.Clear();
             cboBrand.SelectedIndex = 0;
             cboCategory.SelectedIndex = 0;

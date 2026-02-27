@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -271,20 +271,20 @@ namespace POSales
                 while (dr.Read())
                 {
                     i++;
-                    dgvInStockHistory.Rows.Add(
-                        i,
-                        dr["id"].ToString(),
-                        dr["refno"].ToString(),
-                        dr["pcode"].ToString(),
-                        dr["pdesc"].ToString(),
-                        dr["qty"].ToString(),
-                        DateTime.Parse(dr["sdate"].ToString()).ToShortDateString(),
-                        dr["stockinby"].ToString(),
-                        dr["supplier"].ToString(),
-                        ToMoney(dr["CostPrice"]),
-                        ToNumber(dr["Markup"]),
-                        ToMoney(dr["Price"])
-                    );
+                    int r = dgvInStockHistory.Rows.Add();
+                    var row = dgvInStockHistory.Rows[r];
+                    row.Cells["dataGridViewTextBoxColumn1"].Value = i;
+                    row.Cells["dataGridViewTextBoxColumn2"].Value = dr["id"].ToString();
+                    row.Cells["dataGridViewTextBoxColumn3"].Value = dr["refno"].ToString();
+                    row.Cells["dataGridViewTextBoxColumn4"].Value = dr["pcode"].ToString();
+                    row.Cells["dataGridViewTextBoxColumn5"].Value = dr["pdesc"].ToString();
+                    row.Cells["dataGridViewTextBoxColumn6"].Value = dr["qty"].ToString();
+                    row.Cells[ColCostPriceHist].Value = ToMoney(dr["CostPrice"]);
+                    row.Cells[ColMarkupHist].Value = ToNumber(dr["Markup"]);
+                    row.Cells[ColSellPriceHist].Value = ToMoney(dr["Price"]);
+                    row.Cells["dataGridViewTextBoxColumn7"].Value = DateTime.Parse(dr["sdate"].ToString()).ToShortDateString();
+                    row.Cells["dataGridViewTextBoxColumn8"].Value = dr["stockinby"].ToString();
+                    row.Cells["dataGridViewTextBoxColumn9"].Value = dr["supplier"].ToString();
 
                 }
                 dr.Close();
@@ -576,7 +576,7 @@ namespace POSales
             // Ensure the columns exist (in case someone removed them from designer)
             EnsureTextColumn(grid, costName, "Cost Price", editable, "#,##0.00", desiredStartIndex + 0);
             EnsureTextColumn(grid, markupName, "Markup %", editable, "#,##0.##", desiredStartIndex + 1);
-            EnsureTextColumn(grid, priceName, "Price", false, "#,##0.00", desiredStartIndex + 2, forceReadOnly: true);
+            EnsureTextColumn(grid, priceName, "Price", editable, "#,##0.00", desiredStartIndex + 2, forceReadOnly: (grid == dgvInStockHistory));
 
             // Keep description visible if it exists
             try
@@ -642,9 +642,16 @@ namespace POSales
             try
             {
                 string colName = dgvStockIn.Columns[e.ColumnIndex].Name;
-                if (colName != ColCostPrice && colName != ColMarkup) return;
+                if (colName != ColCostPrice && colName != ColMarkup && colName != ColSellPrice) return;
 
-                if (!decimal.TryParse(Convert.ToString(e.FormattedValue), out var v) || v < 0)
+                var s = Convert.ToString(e.FormattedValue);
+                if (string.IsNullOrWhiteSpace(s))
+                {
+                    dgvStockIn.Rows[e.RowIndex].ErrorText = "";
+                    return;
+                }
+
+                if (!decimal.TryParse(s, out var v) || v < 0)
                 {
                     e.Cancel = true;
                     dgvStockIn.Rows[e.RowIndex].ErrorText = "Please enter a valid non-negative number.";
@@ -663,19 +670,51 @@ namespace POSales
             {
                 if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
                 string colName = dgvStockIn.Columns[e.ColumnIndex].Name;
-                if (colName != ColCostPrice && colName != ColMarkup) return;
+                if (colName != ColCostPrice && colName != ColMarkup && colName != ColSellPrice) return;
 
                 var row = dgvStockIn.Rows[e.RowIndex];
                 if (row.IsNewRow) return;
                 if (row.Cells["Column9"].Value == null) return; // id
 
                 int stockInId = Convert.ToInt32(row.Cells["Column9"].Value);
+
                 decimal cost = ToDecimal(row.Cells[ColCostPrice].Value);
                 decimal markup = ToDecimal(row.Cells[ColMarkup].Value);
-                decimal price = CalcSellingPrice(cost, markup);
+                decimal price = ToDecimal(row.Cells[ColSellPrice].Value);
 
-                row.Cells[ColSellPrice].Value = price.ToString("#,##0.00");
+                // Decide which direction to calculate based on which column user edited.
+                if (colName == ColSellPrice)
+                {
+                    // User entered price -> calculate markup
+                    markup = CalcMarkupPercent(cost, price);
+                    row.Cells[ColMarkup].Value = markup.ToString("#,##0.##");
+                }
+                else if (colName == ColMarkup)
+                {
+                    // User entered markup -> calculate price
+                    price = CalcSellingPrice(cost, markup);
+                    row.Cells[ColSellPrice].Value = price.ToString("#,##0.00");
+                }
+                else if (colName == ColCostPrice)
+                {
+                    // If user already typed a price but markup is empty/zero, derive markup.
+                    // Otherwise, derive price from markup.
+                    bool hasPrice = !string.IsNullOrWhiteSpace(Convert.ToString(row.Cells[ColSellPrice].Value));
+                    bool hasMarkup = !string.IsNullOrWhiteSpace(Convert.ToString(row.Cells[ColMarkup].Value));
 
+                    if (hasPrice && (!hasMarkup || markup == 0m))
+                    {
+                        markup = CalcMarkupPercent(cost, price);
+                        row.Cells[ColMarkup].Value = markup.ToString("#,##0.##");
+                    }
+                    else
+                    {
+                        price = CalcSellingPrice(cost, markup);
+                        row.Cells[ColSellPrice].Value = price.ToString("#,##0.00");
+                    }
+                }
+
+                // Persist all pricing fields
                 cn.Open();
                 cm = new SqlCommand(@"UPDATE tbStockIn SET CostPrice=@cost, Markup=@markup, Price=@price WHERE id=@id", cn);
                 cm.Parameters.AddWithValue("@cost", cost);
@@ -689,6 +728,13 @@ namespace POSales
             {
                 try { cn.Close(); } catch { }
             }
+        }
+
+        private decimal CalcMarkupPercent(decimal cost, decimal price)
+        {
+            if (cost <= 0m) return 0m;
+            decimal markup = ((price - cost) / cost) * 100m;
+            return Math.Round(markup, 2);
         }
 
         private void Dgv_DataError(object sender, DataGridViewDataErrorEventArgs e)
