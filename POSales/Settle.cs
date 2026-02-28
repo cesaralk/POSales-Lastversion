@@ -17,7 +17,9 @@ namespace POSales
         SqlCommand cm = new SqlCommand();
         DBConnect dbcon = new DBConnect();        
         Cashier cashier;
-        double exchangeRate = 89500;
+       double exchangeRate = 89500;
+
+
         double totalUSD = 0;
         public Settle(Cashier cash)
         {
@@ -25,7 +27,14 @@ namespace POSales
             cn = new SqlConnection(dbcon.myConnection());
             this.KeyPreview = true;
             cashier = cash;
-
+            // Use the current rate from Cashier (editable on cashier screen)
+            try { exchangeRate = cashier.ExchangeRateLBP; } catch { }
+            // Fallback: if cashier rate not available for any reason, use saved setting
+            if (exchangeRate <= 0)
+            {
+                try { exchangeRate = Properties.Settings.Default.ExchangeRateLBP; } catch { }
+            }
+            if (exchangeRate <= 0) exchangeRate = 89500;
             totalUSD = cashier.CurrentSaleUSD;
 
             // DISPLAY ONLY

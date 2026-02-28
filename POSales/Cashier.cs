@@ -23,7 +23,44 @@ namespace POSales
         string price;
 
         string stitle = "Point Of Sales";
+        // double USD_TO_LBP = 89500;
+        // Default exchange rate (USD -> L.L). User can override from Cashier screen.
         double USD_TO_LBP = 89500;
+
+        // Expose current exchange rate for other forms (e.g., Settle).
+        public double ExchangeRateLBP => GetExchangeRateLBP();
+
+        private double GetExchangeRateLBP()
+        {
+            try
+            {
+                if (txtRate == null) return USD_TO_LBP;
+
+                string s = (txtRate.Text ?? "").Trim();
+                // allow "89,500" or "89500"
+                s = s.Replace(",", "").Replace(" ", "");
+
+                if (double.TryParse(s, out double rate) && rate > 0)
+                    return rate;
+            }
+            catch { }
+            return USD_TO_LBP;
+        }
+
+        private void SetExchangeRateText(double rate)
+        {
+            if (txtRate == null) return;
+            txtRate.Text = rate.ToString("#,##0");
+        }
+
+        private void RefreshTotalsUsingRate()
+        {
+            GetCartTotal();
+
+            double rate = GetExchangeRateLBP();
+            double saleTotalLBP = CurrentSaleUSD * rate;
+            lblSaleTotalLBP.Text = "L.L " + saleTotalLBP.ToString("#,##0");
+        }
         public double CurrentSaleUSD = 0;
 
         public Cashier()
@@ -34,13 +71,72 @@ namespace POSales
             lblDate.Text = DateTime.Now.ToShortDateString();
             txtBarcode.KeyDown += txtBarcode_KeyDown;
 
+
             // Some barcode scanners send CR (KeyPress '\r') or TAB instead of Enter.
             // Handle KeyPress too so "qty + scan" works reliably.
             txtBarcode.KeyPress += txtBarcode_KeyPress;
 
             // Qty helper: allow quick multiply (e.g., set Qty then scan)
             txtQty.KeyPress += TxtQty_KeyPress;
+            // Allow user to change exchange rate.
+            // Rate textbox (USD -> L.L)
+            // Load saved exchange rate (USD -> L.L)
+            try
+            {
+                double saved = Properties.Settings.Default.ExchangeRateLBP;
+                if (saved > 0) USD_TO_LBP = saved;
+            }
+            catch { }
 
+            // Rate textbox (USD -> L.L)
+            if (txtRate != null)
+            {
+                SetExchangeRateText(USD_TO_LBP);
+                txtRate.KeyPress += TxtRate_KeyPress;
+                txtRate.Leave += TxtRate_Leave;
+                txtRate.TextChanged += TxtRate_TextChanged;
+            }
+        }
+
+        private void TxtRate_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // allow digits, backspace, and optional separators
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != ',' && e.KeyChar != '.')
+            {
+                e.Handled = true;
+                return;
+            }
+        }
+
+        private void TxtRate_Leave(object sender, EventArgs e)
+        {
+            // Validate + format on leave
+            double rate = GetExchangeRateLBP();
+            USD_TO_LBP = rate;
+
+            // SAVE persistently (stays until user changes again)
+            try
+            {
+                Properties.Settings.Default.ExchangeRateLBP = rate;
+                Properties.Settings.Default.Save();
+            }
+            catch { }
+
+            SetExchangeRateText(rate);
+            RefreshTotalsUsingRate();
+        }
+
+        private void TxtRate_TextChanged(object sender, EventArgs e)
+        {
+            // Live refresh while typing (only when parseable)
+            if (txtRate == null) return;
+
+            string s = (txtRate.Text ?? "").Trim().Replace(",", "").Replace(" ", "");
+            if (double.TryParse(s, out double rate) && rate > 0)
+            {
+                USD_TO_LBP = rate;
+                RefreshTotalsUsingRate();
+            }
         }
 
         private void txtBarcode_KeyPress(object sender, KeyPressEventArgs e)
@@ -311,7 +407,9 @@ namespace POSales
                 lblDiscount.Text = discount.ToString("#,##0.00");
                 GetCartTotal();
 
-                double saleTotalLBP = total * USD_TO_LBP;
+                //   double saleTotalLBP = total * USD_TO_LBP;
+                double saleTotalLBP = total * GetExchangeRateLBP();
+
                 lblSaleTotalLBP.Text = "L.L " + saleTotalLBP.ToString("#,##0");
 
 
@@ -340,7 +438,8 @@ namespace POSales
             lblDisplayTotal.Text = "$ " + sales.ToString("#,##0.00");
 
 
-            double totalLBP = sales * USD_TO_LBP;
+            // double totalLBP = sales * USD_TO_LBP;
+            double totalLBP = sales * GetExchangeRateLBP();
             lblDisplayTotalLBP.Text = totalLBP.ToString("#,##0") + " L.L";
 
 

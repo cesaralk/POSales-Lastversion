@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace POSales.Properties {
+namespace POSales {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -20,18 +20,6 @@ namespace POSales.Properties {
         public static Settings Default {
             get {
                 return defaultInstance;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("89500")]
-        public double ExchangeRateLBP {
-            get {
-                return ((double)(this["ExchangeRateLBP"]));
-            }
-            set {
-                this["ExchangeRateLBP"] = value;
             }
         }
     }

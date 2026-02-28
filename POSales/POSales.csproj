@@ -282,6 +282,11 @@
       <DependentUpon>Record.cs</DependentUpon>
     </Compile>
     <Compile Include="ReportPrinter.cs" />
+    <Compile Include="Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="ThemeColor.cs" />
     <Compile Include="UserProperties.cs">
       <SubType>Form</SubType>
@@ -494,6 +499,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="UserSession.cs" />
+    <None Include="Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Image\" />
