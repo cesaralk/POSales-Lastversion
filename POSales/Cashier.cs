@@ -384,7 +384,8 @@ namespace POSales
             {
                 Boolean hascart = false;
                 int i = 0;
-                double total = 0;
+                double netTotal = 0;
+                double grossTotal = 0;
                 double discount = 0;
                 dgvCash.Rows.Clear();
                 cn.Open();
@@ -395,20 +396,21 @@ namespace POSales
                 {
 
                     i++;
-                    total += Convert.ToDouble(dr["total"].ToString());
+                    netTotal += Convert.ToDouble(dr["total"].ToString());
                     discount += Convert.ToDouble(dr["disc"].ToString());
+                    grossTotal = netTotal + discount;
                     dgvCash.Rows.Add(i, dr["id"].ToString(), dr["pcode"].ToString(), dr["pdesc"].ToString(), dr["price"].ToString(), dr["qty"].ToString(), dr["disc"].ToString(), double.Parse(dr["total"].ToString()).ToString("#,##0.00"));//
                     hascart = true;
                 }
                 dr.Close();
                 cn.Close();
-                CurrentSaleUSD = total;
-                lblSaleTotal.Text = "$ " + total.ToString("#,##0.00");
+                CurrentSaleUSD = netTotal;
+                lblSaleTotal.Text = "$ " + grossTotal.ToString("#,##0.00");
                 lblDiscount.Text = discount.ToString("#,##0.00");
                 GetCartTotal();
 
-                //   double saleTotalLBP = total * USD_TO_LBP;
-                double saleTotalLBP = total * GetExchangeRateLBP();
+                //   double saleTotalLBP = grossTotal * USD_TO_LBP;
+                double saleTotalLBP = grossTotal * GetExchangeRateLBP();
 
                 lblSaleTotalLBP.Text = "L.L " + saleTotalLBP.ToString("#,##0");
 
@@ -428,10 +430,12 @@ namespace POSales
         {
             double discount = double.Parse(lblDiscount.Text);
             // double sales = double.Parse(lblSaleTotal.Text.Replace("$", "").Trim()) - discount;
-            double sales = CurrentSaleUSD - discount;
+            double sales = CurrentSaleUSD;
 
-            double vat = sales * 0.12;//VAT: 12% of VAT Payable (Output Tax less Input Tax)
-            double vatable = sales - vat;
+            // VAT/Tax logic removed: totals are VAT-free.
+            // Keep the existing labels/parameters populated with safe values so reports don't break.
+            double vat = 0;
+            double vatable = 0;
 
             lblVat.Text = vat.ToString("#,##0.00");
             lblVatable.Text = vatable.ToString("#,##0.00");
@@ -669,6 +673,16 @@ namespace POSales
         {
             Noti();
             txtBarcode.Focus();
+
+            // VAT removed: hide VAT/Vatable UI elements (values remain available as 0.00 for report parameters).
+            try
+            {
+                label9.Visible = false;   // "VAT :"
+                label10.Visible = false;  // "VATable :"
+                lblVat.Visible = false;
+                lblVatable.Visible = false;
+            }
+            catch { /* ignore if designer names change */ }
 
         }
 

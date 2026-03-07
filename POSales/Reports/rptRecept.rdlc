@@ -11,7 +11,7 @@
       <am:Name>MSRB</am:Name>
       <am:Version>15.1.30001.02</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2026-02-28T10:04:34.0707999Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2026-03-02T19:00:51.0443393Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
@@ -480,74 +480,6 @@
               </Border>
             </Style>
           </Tablix>
-          <Textbox Name="pVatable">
-            <rd:DefaultName>pVatable</rd:DefaultName>
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>=Parameters!pVatable.Value</Value>
-                    <Style>
-                      <FontSize>7pt</FontSize>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Right</TextAlign>
-                </Style>
-              </Paragraph>
-            </Paragraphs>
-            <Top>2.08333in</Top>
-            <Left>0.41839in</Left>
-            <Height>0.25in</Height>
-            <Width>0.61459in</Width>
-            <ZIndex>1</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
-          <Textbox Name="pVat">
-            <rd:DefaultName>pVat</rd:DefaultName>
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>=Parameters!pVat.Value</Value>
-                    <Style>
-                      <FontSize>7pt</FontSize>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Right</TextAlign>
-                </Style>
-              </Paragraph>
-            </Paragraphs>
-            <Top>2.10417in</Top>
-            <Left>2.17187in</Left>
-            <Height>0.25in</Height>
-            <Width>0.47917in</Width>
-            <ZIndex>2</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
           <Textbox Name="pDiscount">
             <rd:DefaultName>pDiscount</rd:DefaultName>
             <CanGrow>true</CanGrow>
@@ -567,11 +499,11 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>1.80555in</Top>
+            <Top>1.55555in</Top>
             <Left>1.10937in</Left>
             <Height>0.25in</Height>
             <Width>1.54167in</Width>
-            <ZIndex>3</ZIndex>
+            <ZIndex>1</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -602,11 +534,11 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>1.18277in</Top>
-            <Left>1.28298in</Left>
+            <Top>0.57166in</Top>
+            <Left>0.61112in</Left>
             <Height>0.25in</Height>
-            <Width>0.77083in</Width>
-            <ZIndex>4</ZIndex>
+            <Width>0.53993in</Width>
+            <ZIndex>2</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -637,79 +569,11 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>1.50443in</Top>
-            <Left>2.05033in</Left>
+            <Top>1.21055in</Top>
+            <Left>0.53646in</Left>
             <Height>0.25in</Height>
             <Width>0.61459in</Width>
-            <ZIndex>5</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
-          <Textbox Name="Textbox22">
-            <rd:DefaultName>Textbox22</rd:DefaultName>
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>Vatable</Value>
-                    <Style>
-                      <FontSize>7pt</FontSize>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Left</TextAlign>
-                </Style>
-              </Paragraph>
-            </Paragraphs>
-            <Top>2.08333in</Top>
-            <Left>0.00694in</Left>
-            <Height>0.25in</Height>
-            <Width>0.40451in</Width>
-            <ZIndex>6</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
-          <Textbox Name="Textbox23">
-            <rd:DefaultName>Textbox22</rd:DefaultName>
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>Vat</Value>
-                    <Style>
-                      <FontSize>7pt</FontSize>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Left</TextAlign>
-                </Style>
-              </Paragraph>
-            </Paragraphs>
-            <Top>2.09028in</Top>
-            <Left>1.875in</Left>
-            <Height>0.25in</Height>
-            <Width>0.25in</Width>
-            <ZIndex>7</ZIndex>
+            <ZIndex>3</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -739,10 +603,10 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>1.80555in</Top>
+            <Top>1.55555in</Top>
             <Height>0.25in</Height>
             <Width>1in</Width>
-            <ZIndex>8</ZIndex>
+            <ZIndex>4</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -772,11 +636,10 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>1.18277in</Top>
-            <Left>0.52777in</Left>
+            <Top>0.57166in</Top>
             <Height>0.25in</Height>
-            <Width>0.75in</Width>
-            <ZIndex>9</ZIndex>
+            <Width>0.5191in</Width>
+            <ZIndex>5</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -821,11 +684,10 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>1.50221in</Top>
-            <Left>0.02777in</Left>
+            <Top>0.8911in</Top>
             <Height>0.23612in</Height>
             <Width>0.60417in</Width>
-            <ZIndex>10</ZIndex>
+            <ZIndex>6</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -856,11 +718,11 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>1.50443in</Top>
-            <Left>1.51388in</Left>
+            <Top>1.21055in</Top>
+            <Left>0.00001in</Left>
             <Height>0.25in</Height>
             <Width>0.48264in</Width>
-            <ZIndex>11</ZIndex>
+            <ZIndex>7</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -890,11 +752,11 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>2.29166in</Top>
+            <Top>1.79166in</Top>
             <Left>0.75in</Left>
             <Height>0.25in</Height>
             <Width>1in</Width>
-            <ZIndex>12</ZIndex>
+            <ZIndex>8</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -923,11 +785,11 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>0.86333in</Top>
-            <Left>0.44964in</Left>
+            <Top>0.8911in</Top>
+            <Left>1.95658in</Left>
             <Height>0.25in</Height>
-            <Width>0.70834in</Width>
-            <ZIndex>13</ZIndex>
+            <Width>0.69446in</Width>
+            <ZIndex>9</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -958,10 +820,10 @@
               </Paragraph>
             </Paragraphs>
             <Top>0.57166in</Top>
-            <Left>0.63194in</Left>
+            <Left>1.38888in</Left>
             <Height>0.25in</Height>
             <Width>0.48958in</Width>
-            <ZIndex>14</ZIndex>
+            <ZIndex>10</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -991,10 +853,10 @@
               </Paragraph>
             </Paragraphs>
             <Top>0.57166in</Top>
-            <Left>1.17881in</Left>
+            <Left>1.93575in</Left>
             <Height>0.25in</Height>
-            <Width>0.72917in</Width>
-            <ZIndex>15</ZIndex>
+            <Width>0.71529in</Width>
+            <ZIndex>11</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1024,11 +886,11 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>0.86333in</Top>
-            <Left>0.00694in</Left>
+            <Top>0.8911in</Top>
+            <Left>1.38888in</Left>
             <Height>0.25in</Height>
             <Width>0.51215in</Width>
-            <ZIndex>16</ZIndex>
+            <ZIndex>12</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1057,11 +919,11 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>0.86333in</Top>
-            <Left>1.88715in</Left>
+            <Top>1.21055in</Top>
+            <Left>1.93575in</Left>
             <Height>0.25in</Height>
-            <Width>0.77083in</Width>
-            <ZIndex>17</ZIndex>
+            <Width>0.72223in</Width>
+            <ZIndex>13</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1091,11 +953,11 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>0.86333in</Top>
-            <Left>1.21354in</Left>
+            <Top>1.19666in</Top>
+            <Left>1.22049in</Left>
             <Height>0.25in</Height>
-            <Width>0.60417in</Width>
-            <ZIndex>18</ZIndex>
+            <Width>0.64581in</Width>
+            <ZIndex>14</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1126,11 +988,11 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>1.50221in</Top>
-            <Left>0.63194in</Left>
+            <Top>0.8911in</Top>
+            <Left>0.60417in</Left>
             <Height>0.25in</Height>
             <Width>0.53298in</Width>
-            <ZIndex>19</ZIndex>
+            <ZIndex>15</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1173,11 +1035,11 @@
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>2.5in</Top>
+            <Top>2in</Top>
             <Left>0.21528in</Left>
             <Height>0.39583in</Height>
             <Width>2.11806in</Width>
-            <ZIndex>20</ZIndex>
+            <ZIndex>16</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
